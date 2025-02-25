@@ -11,12 +11,16 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
     private val toDoList = mutableListOf<ToDo>()
-    private val toDoAdapter = ToDoAdapter(toDoList)
+    private lateinit var toDoAdapter : ToDoAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        toDoAdapter = ToDoAdapter(toDoList) { position ->
+            removeToDo(position) // 삭제 기능 연결
+        }
 
         binding.apply {
             rvToDo.apply {
@@ -43,5 +47,11 @@ class MainActivity : AppCompatActivity() {
             }
             setNegativeButton("취소", null)
         }.show()
+    }
+
+    private fun removeToDo(position: Int) {
+        toDoList.removeAt(position)
+        toDoAdapter.notifyItemRemoved(position)
+        toDoAdapter.notifyItemRangeChanged(position, toDoList.size) // 순번 재정렬
     }
 }
